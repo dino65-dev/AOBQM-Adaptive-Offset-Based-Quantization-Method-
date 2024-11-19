@@ -97,4 +97,4 @@ Enhancements to handle larger datasets efficiently.
 **For questions or contributions, please contact [Dinmay Kumar Brahma] at [dinmaybrahma@outlook.com].**
 
 ## Licensing
-This project is licensed under the ```Apache License 2.0```.
+This project is licensed under the ```GPL-3.0```.
