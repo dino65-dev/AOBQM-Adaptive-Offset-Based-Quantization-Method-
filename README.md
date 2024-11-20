@@ -1,11 +1,11 @@
-# AOBQM [Adaptive-Offset-Based-Quantization-Method](http://dx.doi.org/10.13140/RG.2.2.23988.46727/1)
+# AOBQM [Adaptive-Offset-Based-Quantization-Method](http://dx.doi.org/10.13140/RG.2.2.31924.87688)
 # Quantization Method for Neural Networks using Adaptive Scaling and Offset Quantization
 ## Overview
 This repository presents a novel quantization method that separates a float16 value into two int8 arrays: one for the integer part and one for the decimal part. This approach allows the reconstruction of the original float16 value by combining the integer and decimal parts. The method also features adaptive scaling and offset quantization to improve accuracy and reduce reconstruction error.
 
 This technique provides an efficient way to quantize floating-point values and is applicable in machine learning models, particularly for reducing storage requirements and improving inference performance without significant loss in precision.
 
-## Research Paper [DOI](http://dx.doi.org/10.13140/RG.2.2.23988.46727/1)
+## Research Paper [DOI](http://dx.doi.org/10.13140/RG.2.2.31924.87688)
 You can find the research paper detailing this quantization method in the ```aobqm.pdf``` file.
 
 ## Key Features
