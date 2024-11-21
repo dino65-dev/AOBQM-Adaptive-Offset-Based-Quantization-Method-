@@ -8,6 +8,22 @@ This technique provides an efficient way to quantize floating-point values and i
 ## Research Paper [DOI](http://dx.doi.org/10.13140/RG.2.2.31924.87688)
 You can find the research paper detailing this quantization method in the ```aobqm.pdf``` file.
 
+## Citation
+
+If you use this software, please cite the following:
+
+```bibtex
+@article{https://doi.org/10.13140/rg.2.2.31924.87688,
+  doi = {10.13140/RG.2.2.31924.87688},
+  url = {https://rgdoi.net/10.13140/RG.2.2.31924.87688},
+  author = {{Dinmay Brahma}},
+  language = {en},
+  title = {An Adaptive Offset-Based Quantization Method Using Separate Integer and Decimal Representations for Low-Precision Computations in Edge AI},
+  publisher = {Unpublished},
+  year = {2024}
+}
+
+
 ## Key Features
 **Integer-Decimal Split:** Separates the integer and decimal components of the float16 values for independent quantization.
 **Adaptive Decimal Scaling:** Dynamically scales the decimal part based on the values to ensure more accurate representation.
