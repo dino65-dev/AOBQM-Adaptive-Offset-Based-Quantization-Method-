@@ -52,9 +52,9 @@ print("Reconstructed Data (Adaptive Scaling):", reconstructed_values)
 print("Reconstructed Data (Offset Quantization):", reconstructed_offset_values)
 ```
 ## Example Results
-**Original Data:** Floating-point values ranging from -1.0 to 1.0.
-**Reconstructed Data (Adaptive Scaling):** Values reconstructed with minimal error, closely matching the original data.
-**Reconstructed Data (Offset Quantization):** Values reconstructed using offset quantization with negligible error.
+- **Original Data:** Floating-point values ranging from -1.0 to 1.0.
+- **Reconstructed Data (Adaptive Scaling):** Values reconstructed with minimal error, closely matching the original data.
+- **Reconstructed Data (Offset Quantization):** Values reconstructed using offset quantization with negligible error.
 
 ## Performance
 The quantization method demonstrates excellent performance in terms of both reconstruction accuracy and computational efficiency. The adaptive scaling and offset quantization allow the method to maintain precision while significantly reducing storage space.
