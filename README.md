@@ -60,9 +60,9 @@ print("Reconstructed Data (Offset Quantization):", reconstructed_offset_values)
 The quantization method demonstrates excellent performance in terms of both reconstruction accuracy and computational efficiency. The adaptive scaling and offset quantization allow the method to maintain precision while significantly reducing storage space.
 
 ## Applications
-**Machine Learning:** Can be used to quantize weights and activations in deep neural networks, reducing memory usage and improving inference speed.
-**Embedded Systems:** Suitable for use in resource-constrained environments where memory is limited.
-**Data Compression:** Effective in scenarios where data needs to be compressed without significant loss of precision.
+- **Machine Learning:** Can be used to quantize weights and activations in deep neural networks, reducing memory usage and improving inference speed.
+- **Embedded Systems:** Suitable for use in resource-constrained environments where memory is limited.
+- **Data Compression:** Effective in scenarios where data needs to be compressed without significant loss of precision.
 ## Future Work
 **Future improvements may involve:**
 
