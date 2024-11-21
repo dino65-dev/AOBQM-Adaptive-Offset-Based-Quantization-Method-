@@ -38,43 +38,6 @@ The decimal part is scaled to an appropriate range using an adaptive scaling fac
 ## Reconstruction Error
 The proposed method ensures minimal reconstruction error, making the quantized values almost identical to the original float16 values. The method adapts the decimal scaling and offset quantization dynamically based on the data, improving the accuracy of the reconstruction.
 
-## Usage
-To use the quantization method, follow these steps:
-**1. Quantizing Data**
-```bash
-import numpy as np
-
-def quantize(data):
-    # Adaptive Decimal Scaling Factor
-    scaling_factor = 1000000000  # Adjust as needed
-    
-    # Separate integer and decimal parts
-    integer_part = np.floor(data).astype(np.int8)
-    decimal_part = np.round((data - integer_part) * scaling_factor).astype(np.int64)
-    
-    # Offset Quantization (Handling negative values)
-    offset = np.min(data)
-    integer_offset_part = np.floor(data - offset).astype(np.int8)
-    decimal_offset_part = np.round((data - integer_offset_part - offset) * scaling_factor).astype(np.int64)
-    
-    return integer_part, decimal_part, integer_offset_part, decimal_offset_part, scaling_factor, offset
-
-```
-**2. Reconstructing Data**
-```bash
-def reconstruct(integer_part, decimal_part, integer_offset_part, decimal_offset_part, scaling_factor, offset):
-    # Reconstruct with adaptive scaling
-    reconstructed_values = integer_part + (decimal_part / scaling_factor)
-    
-    # Reconstruct with offset quantization
-    reconstructed_offset_values = (integer_offset_part + (decimal_offset_part / scaling_factor)) + offset
-    
-    return reconstructed_values, reconstructed_offset_values
-```
-**3. Example**
-```bash
-# Sample data
-data = np.random.uniform(-1.0, 1.0, (5, 5))
 
 # Quantization
 integer_part, decimal_part, integer_offset_part, decimal_offset_part, scaling_factor, offset = quantize(data)
