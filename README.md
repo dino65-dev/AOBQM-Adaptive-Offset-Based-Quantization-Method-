@@ -46,6 +46,7 @@ integer_part, decimal_part, integer_offset_part, decimal_offset_part, scaling_fa
 reconstructed_values, reconstructed_offset_values = reconstruct(integer_part, decimal_part, integer_offset_part, decimal_offset_part, scaling_factor, offset)
 
 # Print results
+```bash
 print("Original Data:", data)
 print("Reconstructed Data (Adaptive Scaling):", reconstructed_values)
 print("Reconstructed Data (Offset Quantization):", reconstructed_offset_values)
