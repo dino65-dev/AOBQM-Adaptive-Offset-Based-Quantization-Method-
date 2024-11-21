@@ -5,9 +5,6 @@ This repository presents a novel quantization method that separates a float16 va
 
 This technique provides an efficient way to quantize floating-point values and is applicable in machine learning models, particularly for reducing storage requirements and improving inference performance without significant loss in precision.
 
-## Research Paper [DOI](http://dx.doi.org/10.13140/RG.2.2.31924.87688)
-You can find the research paper detailing this quantization method in the ```aobqm.pdf``` file.
-
 ## Citation
 
 If you use this software, please cite the following:
