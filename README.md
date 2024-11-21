@@ -22,7 +22,7 @@ If you use this software, please cite the following:
   publisher = {Unpublished},
   year = {2024}
 }
-
+```
 
 ## Key Features
 **Integer-Decimal Split:** Separates the integer and decimal components of the float16 values for independent quantization.
