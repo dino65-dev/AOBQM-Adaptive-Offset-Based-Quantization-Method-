@@ -1,75 +1,135 @@
 import numpy as np
+import matplotlib.pyplot as plt
+import time
 
-def adaptive_quantize(data, scaling_factor=None, offset=None):
+def quantize_data(data, num_bits=8):
     """
-    Quantizes floating-point data using adaptive scaling and offset quantization.
+    Quantizes the input data using integer representation.
     
-    Parameters:
-    - data (ndarray): Input array of floating-point values to quantize.
-    - scaling_factor (int, optional): Scaling factor for the decimal part. If None, an adaptive factor is used.
-    - offset (float, optional): Offset for the integer part. If None, it will be computed as the median of the data.
+    Args:
+        data (ndarray): Input data to be quantized.
+        num_bits (int): The number of bits for quantization (default: 8).
+
+    Returns:
+        ndarray: Quantized data.
+    """
+    # Calculate the scaling factor based on the range of the data
+    min_val = np.min(data)
+    max_val = np.max(data)
+    scale = (2 ** num_bits - 1) / (max_val - min_val)
+    
+    # Quantize the data
+    quantized_data = np.round((data - min_val) * scale).astype(int)
+    
+    return quantized_data, scale, min_val
+
+
+def reconstruct_data(quantized_data, scale, min_val, num_bits=8):
+    """
+    Reconstructs the data from quantized values.
+    
+    Args:
+        quantized_data (ndarray): Quantized data.
+        scale (float): The scaling factor used in quantization.
+        min_val (float): The minimum value used for normalization.
+        num_bits (int): The number of bits for quantization (default: 8).
     
     Returns:
-    - quantized_data (dict): Dictionary containing quantized components and reconstruction information:
-        - "sign_array": Sign array for each element (-1 or 1).
-        - "integer_part": Unsigned integer part (uint8).
-        - "decimal_part": Scaled integer decimal part (int64).
-        - "integer_offset_part": Offset-adjusted integer part (int8).
-        - "decimal_offset_part": Offset-adjusted decimal part (int64).
-        - "scaling_factor": Scaling factor used for quantization.
-        - "offset": Offset used for integer quantization.
-        - "reconstructed_values": Reconstructed values using adaptive scaling.
-        - "reconstructed_values_offset": Reconstructed values using offset quantization.
-        - "reconstruction_error": Error between original and reconstructed values.
-        - "reconstruction_error_offset": Error for offset-based reconstruction.
+        ndarray: Reconstructed data.
     """
+    # Reconstruct the data
+    reconstructed_data = (quantized_data / (2 ** num_bits - 1)) * (np.max(data) - min_val) + min_val
+    return reconstructed_data
+
+
+def calculate_performance(original_data, reconstructed_data):
+    """
+    Calculate MSE and PSNR between the original and reconstructed data.
     
-    # Ensure data is in floating point format for proper quantization
-    data = np.asarray(data, dtype=np.float32)
+    Args:
+        original_data (ndarray): The original data.
+        reconstructed_data (ndarray): The reconstructed data.
+        
+    Returns:
+        tuple: MSE (Mean Squared Error) and PSNR (Peak Signal-to-Noise Ratio).
+    """
+    mse = np.mean((original_data - reconstructed_data) ** 2)
+    psnr = 20 * np.log10(np.max(original_data) / np.sqrt(mse))
     
-    # Step 1: Set adaptive scaling factor if not provided
-    if scaling_factor is None:
-        scaling_factor = 10 ** np.ceil(-np.log10(np.min(np.abs(data[data != 0]))))
+    return mse, psnr
+
+
+def plot_results(original_data, reconstructed_data, error_map):
+    """
+    Plot the original data, reconstructed data, and error map.
     
-    # Step 2: Define sign array to store the sign of the original data
-    sign_array = np.sign(data).astype(int)
+    Args:
+        original_data (ndarray): The original data.
+        reconstructed_data (ndarray): The reconstructed data.
+        error_map (ndarray): The error map between the original and reconstructed data.
+    """
+    fig, axes = plt.subplots(1, 3, figsize=(15, 5))
     
-    # Step 3: Separate integer and decimal parts with adaptive scaling
-    integer_part = np.floor(np.abs(data)).astype(np.uint8)
-    decimal_part = np.round((np.abs(data) - integer_part) * scaling_factor).astype(np.int64)
+    # Plot the original data
+    cax1 = axes[0].imshow(original_data, cmap='viridis')
+    axes[0].set_title('Original Data')
+    fig.colorbar(cax1, ax=axes[0])
     
-    # Step 4: Compute offset as median of data if not provided
-    if offset is None:
-        offset = np.median(integer_part)
+    # Plot the reconstructed data
+    cax2 = axes[1].imshow(reconstructed_data, cmap='viridis')
+    axes[1].set_title('Reconstructed Data')
+    fig.colorbar(cax2, ax=axes[1])
     
-    # Step 5: Perform offset quantization on integer and decimal parts
-    integer_offset_part = (integer_part - offset).astype(np.int8)
-    decimal_offset_part = np.round((np.abs(data) - integer_offset_part - offset) * scaling_factor).astype(np.int64)
+    # Plot the error map
+    cax3 = axes[2].imshow(error_map, cmap='coolwarm')
+    axes[2].set_title('Error Map')
+    fig.colorbar(cax3, ax=axes[2])
     
-    # Step 6: Reconstruct original values from quantized components
-    reconstructed_values = (sign_array * (integer_part + decimal_part / scaling_factor)).astype(np.float32)
-    reconstructed_values_offset = (sign_array * (integer_offset_part + offset + decimal_offset_part / scaling_factor)).astype(np.float32)
+    plt.show()
+
+
+def compute_execution_time(func, *args):
+    """
+    Measure the execution time of a function.
     
-    # Step 7: Calculate reconstruction errors
-    reconstruction_error = data - reconstructed_values
-    reconstruction_error_offset = data - reconstructed_values_offset
-    
-    # Return all quantized components and reconstruction information
-    return {
-        "sign_array": sign_array,
-        "integer_part": integer_part,
-        "decimal_part": decimal_part,
-        "integer_offset_part": integer_offset_part,
-        "decimal_offset_part": decimal_offset_part,
-        "scaling_factor": scaling_factor,
-        "offset": offset,
-        "reconstructed_values": reconstructed_values,
-        "reconstructed_values_offset": reconstructed_values_offset,
-        "reconstruction_error": reconstruction_error,
-        "reconstruction_error_offset": reconstruction_error_offset
-    }
+    Args:
+        func (function): The function whose execution time will be measured.
+        *args: Arguments to pass to the function.
+        
+    Returns:
+        float: Execution time in seconds.
+    """
+    start_time = time.time()
+    func(*args)
+    end_time = time.time()
+    return end_time - start_time
+
 
 # Example usage
-data = np.random.rand(10, 10) - 0.5  # Random data between -0.5 and 0.5
-quantized_data = adaptive_quantize(data)
-print(quantized_data)
+if __name__ == "__main__":
+    # The user needs to supply their own data (e.g., 2D NumPy array)
+    data = np.load('data.npy')  # Load your own data (replace 'data.npy' with your file path)
+    
+    # Perform quantization and reconstruction
+    quantized_data, scale, min_val = quantize_data(data, num_bits=8)
+    reconstructed_data = reconstruct_data(quantized_data, scale, min_val, num_bits=8)
+    
+    # Calculate performance
+    mse, psnr = calculate_performance(data, reconstructed_data)
+    
+    # Generate error map
+    error_map = reconstructed_data - data
+    
+    # Plot results
+    plot_results(data, reconstructed_data, error_map)
+    
+    # Print results
+    print(f"MSE: {mse}")
+    print(f"PSNR: {psnr} dB")
+    
+    # Measure execution time
+    quantization_time = compute_execution_time(quantize_data, data, 8)
+    reconstruction_time = compute_execution_time(reconstruct_data, quantized_data, scale, min_val, 8)
+    
+    print(f"Quantization Time: {quantization_time} seconds")
+    print(f"Reconstruction Time: {reconstruction_time} seconds")
